@@ -139,6 +139,8 @@ public partial class App : Application
             PlayerViewModel.Dispose();
             WindowHelper.CloseAll();
         };
+        appWindow.Title = "Audibly — Audiobook Player";
+        appWindow.SetIcon("Assets/logo.ico");
 
         win32WindowHelper = new Win32WindowHelper(Window);
         win32WindowHelper.SetWindowMinMaxSize(new Win32WindowHelper.POINT { x = 940, y = 640 });

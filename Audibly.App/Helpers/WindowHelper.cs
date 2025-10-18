@@ -72,6 +72,10 @@ public static class WindowHelper
 
         miniPlayerWindow.Activate();
         miniPlayerWindow.AppWindow.IsShownInSwitchers = true;
+        
+        miniPlayerWindow.AppWindow.Title = "Audibly — Audiobook Player";
+        miniPlayerWindow.AppWindow.SetIcon("Assets/logo.ico");
+        
         HideMainWindow();
     }
 
