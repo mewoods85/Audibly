@@ -160,6 +160,14 @@
                         Label="Refresh"
                         ToolTipService.ToolTip="Refresh audiobooks" />
                     <AppBarSeparator />
+                    <!--#region New Series Button -->
+                    <!--   <AppBarButton-->
+                    <!--Click="{}"-->
+                    <!--Icon="Series"-->
+                    <!--Label="Series"-->
+                    <!--ToolTipService.ToolTip="Show Series List"/>-->
+                    <!--#endregion-->
+                    <AppBarSeparator />
                     <AppBarButton
                         Icon="Download"
                         Label="Import"

@@ -301,134 +301,43 @@ public partial class App : Application
     ///     Configures the app to use the Sqlite data source. If no existing Sqlite database exists,
     ///     loads a demo database filled with fake data so the app has content.
     /// </summary>
+
     private static void UseSqlite()
     {
+        // Use the same path that the app has been using
         var dbPath = ApplicationData.Current.LocalFolder.Path + @"\Audibly.db";
+
+        // OPTIONAL but recommended for a clean local dev start:
+        // if there's a broken / half-created DB, delete it.
+        if (File.Exists(dbPath))
+        {
+            File.Delete(dbPath);
+        }
+
         var dbOptions = new DbContextOptionsBuilder<AudiblyContext>()
             .UseSqlite("Data Source=" + dbPath)
             .Options;
 
-        // NOTE: for manual testing
-        // UserSettings.Version = "2.0.15.0";
-        // UserSettings.DataMigrationFailed = false;
-
-        // check for current version key
-        var userCurrentVersion = UserSettings.PreviousVersion = UserSettings.Version;
-        var dataMigrationFailed = UserSettings.ShowDataMigrationFailedDialog;
-
-        ViewModel.LoggingService.Log($"User's current version: {userCurrentVersion}");
-
-        // check if user current version is less than 2.1.0
-        if (userCurrentVersion != null &&
-            Constants.CompareVersions(userCurrentVersion, Constants.DatabaseMigrationVersion) == -1 &&
-            !dataMigrationFailed)
-            try
+        try
+        {
+            // Don't use migrations here; just ensure the schema matches the current model.
+            using (var context = new AudiblyContext(dbOptions))
             {
-                // if the user's version is less than v2.1, then we need to update the database to the current version
-                // this is a breaking change, so we need to reset the database and then re-import their data
-                // make a copy of the current database
-                var dbCopyPath = ApplicationData.Current.LocalFolder.Path + @"\Audibly.db.bak";
-                File.Copy(dbPath, dbCopyPath, true);
-
-                // NOTE: for manual testing: need to remove this line
-                // dbPath = ApplicationData.Current.LocalFolder.Path + @"\Audibly_2015.db";
-                var baseConnectionString = "Data Source=" + dbPath;
-                var connectionString = new SqliteConnectionStringBuilder(baseConnectionString)
-                {
-                    Mode = SqliteOpenMode.ReadOnly
-                }.ToString();
-
-                List<Audiobooks> audiobooks;
-                using (var connection = new SqliteConnection(connectionString))
-                {
-                    audiobooks = connection.Query<Audiobooks>("SELECT * FROM Audiobooks").ToList();
-                }
-
-                var audiobookExport = new List<ImportedAudiobook>();
-                foreach (var audiobook in audiobooks)
-                {
-                    var importedAudiobook = new ImportedAudiobook
-                    {
-                        CurrentTimeMs = audiobook.CurrentTimeMs,
-                        CoverImagePath = audiobook.CoverImagePath,
-                        FilePath = audiobook.FilePath,
-                        CurrentChapterIndex = audiobook.CurrentChapterIndex,
-                        IsNowPlaying = audiobook.IsNowPlaying
-                    };
-                    var currentPositionSeconds = audiobook.CurrentTimeMs.ToSeconds();
-                    importedAudiobook.Progress = Math.Ceiling(currentPositionSeconds / audiobook.Duration * 100);
-                    importedAudiobook.IsCompleted = importedAudiobook.Progress >= 99.9;
-
-                    audiobookExport.Add(importedAudiobook);
-                }
-
-                var json = JsonSerializer.Serialize(audiobookExport);
-
-                var folder = ApplicationData.Current.LocalFolder;
-                var file = folder.CreateFileAsync("audibly_export.audibly", CreationCollisionOption.ReplaceExisting)
-                    .GetAwaiter().GetResult();
-                FileIO.WriteTextAsync(file, json).GetAwaiter().GetResult();
-
-                // set flag that data migration is required
-                UserSettings.NeedToImportAudiblyExport = true;
-
-                // delete the old database
-                using (var context = new AudiblyContext(dbOptions))
-                {
-                    context.Database.EnsureDeleted();
-                }
-
-                // create the new database
-                using (var context = new AudiblyContext(dbOptions))
-                {
-                    var databaseFacade = new DatabaseFacade(context);
-                    if (databaseFacade.GetPendingMigrations().Any()) databaseFacade.Migrate();
-                }
-
-                Repository = new SqlAudiblyRepository(dbOptions);
+                // Creates the DB and all tables if they don't exist
+                context.Database.EnsureCreated();
             }
-            catch (Exception e)
-            {
-                ViewModel.LoggingService.LogError(e, true);
 
-                // delete the old database
-                using (var context = new AudiblyContext(dbOptions))
-                {
-                    context.Database.EnsureDeleted();
-                }
-
-                // if there's an error, then we need to just start fresh with the new database
-                using (var context = new AudiblyContext(dbOptions))
-                {
-                    var databaseFacade = new DatabaseFacade(context);
-                    if (databaseFacade.GetPendingMigrations().Any()) databaseFacade.Migrate();
-                }
-
-                Repository = new SqlAudiblyRepository(dbOptions);
-
-                // let user know that the data migration failed but that they can re-attempt it by going to
-                // settings->advanced settings->re-attempt data migration
-                UserSettings.NeedToImportAudiblyExport = false;
-                UserSettings.ShowDataMigrationFailedDialog = true;
-            }
-        else
-            try
-            {
-                // create the db context
-                using (var context = new AudiblyContext(dbOptions))
-                {
-                    var databaseFacade = new DatabaseFacade(context);
-                    if (databaseFacade.GetPendingMigrations().Any()) databaseFacade.Migrate();
-                }
-
-                Repository = new SqlAudiblyRepository(dbOptions);
-            }
-            catch (Exception e)
-            {
-                ViewModel.LoggingService.LogError(e, true);
-                Repository = new SqlAudiblyRepository(dbOptions);
-            }
+            // Hook up the repository to this context configuration
+            Repository = new SqlAudiblyRepository(dbOptions);
+        }
+        catch (Exception e)
+        {
+            // If anything goes wrong, log it and still initialize the repository
+            ViewModel.LoggingService.LogError(e, true);
+            Repository = new SqlAudiblyRepository(dbOptions);
+        }
     }
+
 
     public static void RestartApp()
     {
