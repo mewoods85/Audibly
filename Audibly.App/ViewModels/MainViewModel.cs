@@ -92,12 +92,12 @@ public class MainViewModel : BindableBase
     /// <summary>
     ///     The collection of audiobooks in the list.
     /// </summary>
-    public ObservableCollection<AudiobookViewModel> Audiobooks { get; } = [];
+    public ObservableCollection<AudiobookViewModel> Audiobooks { get; } = new();
 
     /// <summary>
     ///     The collection of audiobooks to be used for filtering.
     /// </summary>
-    public List<AudiobookViewModel> AudiobooksForFilter { get; } = [];
+    public List<AudiobookViewModel> AudiobooksForFilter { get; } = new();
 
     /// <summary>
     ///     Gets or sets the selected audiobook, or null if no audiobook is selected.
@@ -225,11 +225,11 @@ public class MainViewModel : BindableBase
         set => Set(ref _progressDialogTotalText, value);
     }
 
-    public ObservableCollection<SelectedFile> SelectedFiles { get; } = [];
+    public ObservableCollection<SelectedFile> SelectedFiles { get; } = new();
 
     // TODO: need to move these methods to a separate class
 
-    public ObservableCollection<Notification> Notifications { get; } = [];
+    public ObservableCollection<Notification> Notifications { get; } = new();
 
     /// <summary>
     ///     Invoked when we want to reset the filters in the LibraryCardPage.
@@ -430,8 +430,15 @@ public class MainViewModel : BindableBase
 
         var audiobooksExport = Audiobooks.Select(x => new
         {
-            x.CurrentSourceFile.CurrentTimeMs, x.CoverImagePath, x.CurrentSourceFile.FilePath, x.Progress,
-            x.CurrentChapterIndex, x.IsNowPlaying, x.IsCompleted
+            x.CurrentSourceFile.CurrentTimeMs,
+            x.CoverImagePath,
+            x.CurrentSourceFile.FilePath,
+            x.Progress,
+            x.CurrentChapterIndex,
+            x.IsNowPlaying,
+            x.IsCompleted,
+            x.Series,
+            x.SeriesNumber
         });
         var json = JsonSerializer.Serialize(audiobooksExport);
 
@@ -1389,48 +1396,4 @@ public class AudiobookTileSize
     public double ProgressIndicatorFontSize { get; set; }
     public double AudiobookTileWidth { get; set; }
     public double AudiobookTileMinColumnSpacing { get; set; }
-    Audibly.App\ViewModels\MainViewModel.cs
-    // Replace the CreateExportFile method body with this implementation:
-
-    public async void CreateExportFile(object sender, RoutedEventArgs e)
-    {
-        await GetAudiobookListAsync();
-
-        var audiobooksExport = Audiobooks.Select(x => new
-        {
-            x.CurrentSourceFile.CurrentTimeMs,
-            x.CoverImagePath,
-            x.CurrentSourceFile.FilePath,
-            x.Progress,
-            x.CurrentChapterIndex,
-            x.IsNowPlaying,
-            x.IsCompleted,
-            x.Series,
-            x.SeriesNumber
-        });
-        var json = JsonSerializer.Serialize(audiobooksExport);
-
-        // let user choose where to save the file
-        var savePicker = new FileSavePicker();
-        var window = App.Window;
-        var hWnd = WindowNative.GetWindowHandle(window);
-        InitializeWithWindow.Initialize(savePicker, hWnd);
-        savePicker.SuggestedStartLocation = PickerLocationId.Desktop;
-        savePicker.FileTypeChoices.Add("Audibly Export File", new List<string> { ".audibly" });
-        savePicker.SuggestedFileName = "audibly_export";
-
-        var file = savePicker.PickSaveFileAsync().AsTask().Result;
-
-        if (file == null) return;
-
-        // write the json string to the file
-        FileIO.WriteTextAsync(file, json).AsTask().Wait();
-
-        // notify the user that the file was created
-        EnqueueNotification(new Notification
-        {
-            Message = "Export file created successfully!",
-            Severity = InfoBarSeverity.Success
-        });
-    }
 }
