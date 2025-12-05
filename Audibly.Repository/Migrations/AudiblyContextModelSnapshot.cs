@@ -66,6 +66,12 @@ namespace Audibly.Repository.Migrations
                     b.Property<DateTime?>("ReleaseDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Series")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("SeriesNumber")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ThumbnailPath")
                         .IsRequired()
                         .HasColumnType("TEXT");

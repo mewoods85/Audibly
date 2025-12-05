@@ -1,6 +1,6 @@
 ﻿// Author: rstewa · https://github.com/rstewa
 // Created: 04/15/2024
-// Updated: 10/17/2024
+// Updated: 12/05/2025
 
 using System;
 using System.Collections.Generic;
@@ -241,6 +241,9 @@ public class FileImportService : IImportFiles
                 IsCompleted = false
             };
 
+            string? seriesFromTags = null;
+            int? seriesNumberFromTags = null;
+
             var sourceFileIndex = 0;
             var chapterIndex = 0;
             foreach (var path in paths)
@@ -260,6 +263,20 @@ public class FileImportService : IImportFiles
                                 : track.Comment
                             : track.Description;
                     audiobook.ReleaseDate = track.Date;
+
+                    // parse series from common tags (Album / ©alb)
+                    seriesFromTags = track.Album;
+                    if (string.IsNullOrWhiteSpace(seriesFromTags) && track.AdditionalFields.TryGetValue("\u00A9alb", out var alb))
+                        seriesFromTags = alb;
+
+                    // try parse series number from partofset / track / tracknumber
+                    if (track.AdditionalFields.TryGetValue("partofset", out var partOfSetRaw) ||
+                        track.AdditionalFields.TryGetValue("track", out partOfSetRaw) ||
+                        track.AdditionalFields.TryGetValue("tracknumber", out partOfSetRaw))
+                    {
+                        var parts = partOfSetRaw.Split('/');
+                        if (int.TryParse(parts[0], out var parsed)) seriesNumberFromTags = parsed;
+                    }
                 }
 
                 var sourceFile = new SourceFile
@@ -299,21 +316,19 @@ public class FileImportService : IImportFiles
             // get duration of the entire audiobook
             audiobook.Duration = audiobook.SourcePaths.Sum(x => x.Duration);
 
+            // assign series values (default to empty string for Series to avoid nulls)
+            audiobook.Series = seriesFromTags ?? string.Empty;
+            audiobook.SeriesNumber = seriesNumberFromTags;
+
             // save the cover image somewhere
             var imageBytes = new Track(paths.First()).EmbeddedPictures.FirstOrDefault()?.PictureData;
 
             // generate hash from title, author, and composer
             var hash = $"{audiobook.Title}{audiobook.Author}{audiobook.Composer}".GetSha256Hash();
 
-            // todo: do i want to write the metadata to a json file here?
-            // write the metadata to a json file
-            // await App.ViewModel.AppDataService.WriteMetadataAsync(dir, track);
-
             (audiobook.CoverImagePath, audiobook.ThumbnailPath) =
                 await App.ViewModel.AppDataService.WriteCoverImageAsync(hash, imageBytes);
 
-            // combine the chapters from all the files
-            // audiobook.Chapters = audiobook.SourcePaths.SelectMany(x => x.Chapters).ToList();
             audiobook.CurrentChapterIndex = 0;
 
             return audiobook;
@@ -353,9 +368,24 @@ public class FileImportService : IImportFiles
                 FilePath = path,
                 Duration = track.Duration,
                 CurrentTimeMs = importedAudiobook?.CurrentTimeMs ?? 0
-                // CurrentChapterIndex = 0,
-                // Chapters = []
             };
+
+            // parse series information (prefer importedAudiobook values when available)
+            string? seriesFromTags = importedAudiobook?.Series ?? track.Album;
+            if (string.IsNullOrWhiteSpace(seriesFromTags) && track.AdditionalFields.TryGetValue("\u00A9alb", out var alb2))
+                seriesFromTags = alb2;
+
+            int? seriesNumberFromTags = importedAudiobook?.SeriesNumber;
+            if (seriesNumberFromTags == null)
+            {
+                if (track.AdditionalFields.TryGetValue("partofset", out var part) ||
+                    track.AdditionalFields.TryGetValue("track", out part) ||
+                    track.AdditionalFields.TryGetValue("tracknumber", out part))
+                {
+                    var parts = part.Split('/');
+                    if (int.TryParse(parts[0], out var p2)) seriesNumberFromTags = p2;
+                }
+            }
 
             var audiobook = new Audiobook
             {
@@ -380,10 +410,11 @@ public class FileImportService : IImportFiles
                 SourcePaths =
                 [
                     sourceFile
-                ]
+                ],
+                // series metadata
+                Series = seriesFromTags ?? string.Empty,
+                SeriesNumber = seriesNumberFromTags
             };
-
-            // TODO: check if the audiobook already exists in the database
 
             // save the cover image somewhere
             var imageBytes = track.EmbeddedPictures.FirstOrDefault()?.PictureData;
@@ -391,14 +422,8 @@ public class FileImportService : IImportFiles
             // generate hash from title, author, and composer
             var hash = $"{audiobook.Title}{audiobook.Author}{audiobook.Composer}".GetSha256Hash();
 
-            // write the metadata to a json file
-            // todo: is this killing the import time?
-            // await App.ViewModel.AppDataService.WriteMetadataAsync(hash, track);
-
             (audiobook.CoverImagePath, audiobook.ThumbnailPath) =
                 await App.ViewModel.AppDataService.WriteCoverImageAsync(hash, imageBytes);
-
-            // var chapters = audiobook.SourcePaths.First().Chapters;
 
             // read in the chapters
             var chapterIndex = 0;

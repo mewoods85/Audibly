@@ -1389,4 +1389,48 @@ public class AudiobookTileSize
     public double ProgressIndicatorFontSize { get; set; }
     public double AudiobookTileWidth { get; set; }
     public double AudiobookTileMinColumnSpacing { get; set; }
+    Audibly.App\ViewModels\MainViewModel.cs
+    // Replace the CreateExportFile method body with this implementation:
+
+    public async void CreateExportFile(object sender, RoutedEventArgs e)
+    {
+        await GetAudiobookListAsync();
+
+        var audiobooksExport = Audiobooks.Select(x => new
+        {
+            x.CurrentSourceFile.CurrentTimeMs,
+            x.CoverImagePath,
+            x.CurrentSourceFile.FilePath,
+            x.Progress,
+            x.CurrentChapterIndex,
+            x.IsNowPlaying,
+            x.IsCompleted,
+            x.Series,
+            x.SeriesNumber
+        });
+        var json = JsonSerializer.Serialize(audiobooksExport);
+
+        // let user choose where to save the file
+        var savePicker = new FileSavePicker();
+        var window = App.Window;
+        var hWnd = WindowNative.GetWindowHandle(window);
+        InitializeWithWindow.Initialize(savePicker, hWnd);
+        savePicker.SuggestedStartLocation = PickerLocationId.Desktop;
+        savePicker.FileTypeChoices.Add("Audibly Export File", new List<string> { ".audibly" });
+        savePicker.SuggestedFileName = "audibly_export";
+
+        var file = savePicker.PickSaveFileAsync().AsTask().Result;
+
+        if (file == null) return;
+
+        // write the json string to the file
+        FileIO.WriteTextAsync(file, json).AsTask().Wait();
+
+        // notify the user that the file was created
+        EnqueueNotification(new Notification
+        {
+            Message = "Export file created successfully!",
+            Severity = InfoBarSeverity.Success
+        });
+    }
 }

@@ -165,6 +165,15 @@
                         Text="{x:Bind Author, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis"
                         TextWrapping="NoWrap" />
+                    <!-- Series display (will be empty when no series) -->
+                    <TextBlock
+                        FontSize="{x:Bind ViewModel.AuthorFontSize, Mode=OneWay}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="{x:Bind SeriesDisplay, Mode=OneWay}"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
                 </StackPanel>
 
                 <!--  progress  -->

@@ -1,267 +1,259 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-        <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-        <RootNamespace>Audibly.App</RootNamespace>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-        <Platforms>x86;x64;ARM64</Platforms>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-        <PublishProfile>win-$(Platform).pubxml</PublishProfile>
-        <UseRidGraph>true</UseRidGraph>
-        <UseWinUI>true</UseWinUI>
-        <EnableMsixTooling>true</EnableMsixTooling>
-        <Nullable>enable</Nullable>
-        <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-        <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-        <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
-        <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-        <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-        <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
-        <GenerateTestArtifacts>True</GenerateTestArtifacts>
-        <AppxBundle>Always</AppxBundle>
-        <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-        <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
-    </PropertyGroup>
+﻿	<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<RootNamespace>Audibly.App</RootNamespace>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<Platforms>x86;x64;ARM64</Platforms>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+		<PublishProfile>win-$(Platform).pubxml</PublishProfile>
+		<UseRidGraph>true</UseRidGraph>
+		<UseWinUI>true</UseWinUI>
+		<EnableMsixTooling>true</EnableMsixTooling>
+		<Nullable>enable</Nullable>
+		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+		<AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
+		<GenerateTestArtifacts>True</GenerateTestArtifacts>
+		<AppxBundle>Always</AppxBundle>
+		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+		<AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
+	</PropertyGroup>
 
-    <!-- We recommend only using these features for release builds. -->
-    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <!-- Configure Sentry org and project -->
-        <SentryOrg>audibly</SentryOrg>
-        <SentryProject>audibly</SentryProject>
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<SentryOrg>audibly</SentryOrg>
+		<SentryProject>audibly</SentryProject>
+		<SentryCreateRelease>false</SentryCreateRelease>
+		<SentrySetCommits>true</SentrySetCommits>
+		<SentrySetCommitOptions>--local</SentrySetCommitOptions>
+		<SentryUploadSymbols>true</SentryUploadSymbols>
+		<SentryUploadSources>true</SentryUploadSources>
+	</PropertyGroup>
 
-        <!-- Automatically creates a release when building your application. -->
-        <SentryCreateRelease>false</SentryCreateRelease>
+	<ItemGroup>
+		<None Remove="UserControls\CoverImageTile.xaml" />
+		<None Remove="UserControls\CustomTimerPopup.xaml" />
+		<None Remove="UserControls\NowPlayingBar.xaml" />
+		<None Remove="UserControls\PlayerControlGrid.xaml" />
+		<None Remove="UserControls\PlaySkipButtonsStack.xaml" />
+		<None Remove="UserControls\TitleArtistStack.xaml" />
+		<None Remove="Views\CollectionContentPage.xaml" />
+		<None Remove="Views\ContentDialogs\ProgressContentDialog.xaml" />
+		<None Remove="Views\ControlPages\ChangelogDialogContent.xaml" />
+		<None Remove="Views\ControlPages\FailedDataMigrationContent.xaml" />
+		<None Remove="Views\ControlPages\MoreInfoDialogContent.xaml" />
+		<None Remove="Views\ControlPages\OnBoardingDialogContent.xaml" />
+		<None Remove="Views\ControlPages\SelectedFilesDialog.xaml" />
+		<None Remove="Views\FoldersPage.xaml" />
+		<None Remove="Views\MiniPlayerPage.xaml" />
+		<None Remove="Views\NewMiniPlayerPage.xaml" />
+		<None Remove="Views\ResizableContentDialog.xaml" />
+	</ItemGroup>
 
-        <!-- Automatically associates commits with the release. -->
-        <SentrySetCommits>true</SentrySetCommits>
+	<ItemGroup>
+		<Content Include="Assets\SplashScreen.scale-200.png" />
+		<Content Include="Assets\LockScreenLogo.scale-200.png" />
+		<Content Include="Assets\Square150x150Logo.scale-200.png" />
+		<Content Include="Assets\Square44x44Logo.scale-200.png" />
+		<Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+		<Content Include="Assets\Wide310x150Logo.scale-200.png" />
+		<Content Update="Assets\PayPal_Monogram_Full_Color_RGB.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\StoreLogo.scale-400.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\libation_icon.jpg">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\openaudible-icon.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\libation_icon.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\DefaultCoverImage.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\AudiblyCustom.ttf">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\logo.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Assets\logo.ico">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
-        <!-- Optionally provide explicit flags to the set-commits command -->
-        <SentrySetCommitOptions>--local</SentrySetCommitOptions>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.MarkdownTextBlock" Version="0.1.251021-build.2365" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
+		<PackageReference Include="CommunityToolkit.WinUI.Controls.TokenizingTextBox" Version="8.2.250402" />
+		<PackageReference Include="CommunityToolkit.WinUI.DeveloperTools" Version="8.2.250402" />
+		<PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="8.2.250402" />
+		<PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.250402" />
+		<PackageReference Include="CommunityToolkit.WinUI.Triggers" Version="8.2.250402" />
+		<PackageReference Include="Dapper" Version="2.1.66" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
+		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
+		<Manifest Include="$(ApplicationManifest)" />
+		<PackageReference Include="PInvoke.User32" Version="0.7.124" />
+		<PackageReference Include="Sentry" Version="5.13.0" />
+		<PackageReference Include="Sharpener" Version="0.2.4" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
+		<PackageReference Include="z440.atl.core" Version="7.2.0" />
+	</ItemGroup>
 
-        <!-- Sends symbols to Sentry, enabling symbolication of stack traces. -->
-        <SentryUploadSymbols>true</SentryUploadSymbols>
+	<ItemGroup>
+		<ProjectReference Include="..\Audibly.Models\Audibly.Models.csproj" />
+		<ProjectReference Include="..\Audibly.Repository\Audibly.Repository.csproj" />
+	</ItemGroup>
 
-        <!-- Sends sources to Sentry, enabling display of source context. -->
-        <SentryUploadSources>true</SentryUploadSources>
+	<ItemGroup>
+		<Page Update="Views\ControlPages\ChangelogDialogContent.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="UserControls\ZoomLevelUserControl.xaml">
+			<SubType>Designer</SubType>
+		</Page>
+	</ItemGroup>
 
-    </PropertyGroup>
+	<ItemGroup>
+		<Page Update="UserControls\CustomHyperlinkButton.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
+	<ItemGroup>
+		<Page Update="Views\LibraryCardPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-    <ItemGroup>
-        <None Remove="UserControls\CoverImageTile.xaml" />
-        <None Remove="UserControls\CustomTimerPopup.xaml" />
-        <None Remove="UserControls\NowPlayingBar.xaml" />
-        <None Remove="UserControls\PlayerControlGrid.xaml" />
-        <None Remove="UserControls\PlaySkipButtonsStack.xaml" />
-        <None Remove="UserControls\TitleArtistStack.xaml" />
-        <None Remove="Views\CollectionContentPage.xaml" />
-        <None Remove="Views\ContentDialogs\ProgressContentDialog.xaml" />
-        <None Remove="Views\ControlPages\ChangelogDialogContent.xaml" />
-        <None Remove="Views\ControlPages\FailedDataMigrationContent.xaml" />
-        <None Remove="Views\ControlPages\MoreInfoDialogContent.xaml" />
-        <None Remove="Views\ControlPages\OnBoardingDialogContent.xaml" />
-        <None Remove="Views\ControlPages\SelectedFilesDialog.xaml" />
-        <None Remove="Views\FoldersPage.xaml" />
-        <None Remove="Views\MiniPlayerPage.xaml" />
-        <None Remove="Views\NewMiniPlayerPage.xaml" />
-        <None Remove="Views\ResizableContentDialog.xaml" />
-    </ItemGroup>
+	<ItemGroup>
+		<Page Update="UserControls\ProgressBarWithText.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-    <ItemGroup>
-        <Content Include="Assets\SplashScreen.scale-200.png" />
-        <Content Include="Assets\LockScreenLogo.scale-200.png" />
-        <Content Include="Assets\Square150x150Logo.scale-200.png" />
-        <Content Include="Assets\Square44x44Logo.scale-200.png" />
-        <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-        <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-        <Content Update="Assets\PayPal_Monogram_Full_Color_RGB.png">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Assets\StoreLogo.scale-400.png">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Assets\libation_icon.jpg">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Assets\openaudible-icon.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Assets\libation_icon.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Assets\DefaultCoverImage.png">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Assets\AudiblyCustom.ttf">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Assets\logo.png">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Update="Assets\logo.ico">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\ControlPages\ProgressDialogContent.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="14.0.0"/>
-        <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.MarkdownTextBlock" Version="0.1.250206-build.2040" />
-        <PackageReference Include="CommunityToolkit.Labs.WinUI.MarqueeText" Version="0.1.250206-build.2040" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-        <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
-        <PackageReference Include="CommunityToolkit.WinUI.Controls.TokenizingTextBox" Version="8.2.250402" />
-        <PackageReference Include="CommunityToolkit.WinUI.DeveloperTools" Version="8.2.250402" />
-        <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="8.2.250402" />
-        <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.250402" />
-        <PackageReference Include="CommunityToolkit.WinUI.Triggers" Version="8.2.250402" />
-        <PackageReference Include="Dapper" Version="2.1.66" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
-        <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
-        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
-        <Manifest Include="$(ApplicationManifest)" />
-        <PackageReference Include="PInvoke.User32" Version="0.7.124" />
-        <PackageReference Include="Sentry" Version="5.13.0" />
-        <PackageReference Include="Sharpener" Version="0.2.4" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
-        <PackageReference Include="z440.atl.core" Version="7.2.0" />
-    </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\PlayerPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-    <!-- 
-      Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
-      Tools extension to be activated for this project even if the Windows App SDK Nuget
-      package has not yet been restored.
-    -->
-    <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-        <ProjectCapability Include="Msix" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\Audibly.Models\Audibly.Models.csproj" />
-        <ProjectReference Include="..\Audibly.Repository\Audibly.Repository.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\ControlPages\ChangelogDialogContent.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Update="UserControls\ZoomLevelUserControl.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="UserControls\CustomHyperlinkButton.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\LibraryCardPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="UserControls\ProgressBarWithText.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\ControlPages\ProgressDialogContent.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\PlayerPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Update="Changelog.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>Changelog.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Update="Changelog.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Changelog.resx</DependentUpon>
-        </Compile>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="UserControls\CustomTimerPopup.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="UserControls\CoverImageTile.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\NewMiniPlayerPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="UserControls\PlaySkipButtonsStack.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="UserControls\TitleArtistStack.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="UserControls\NowPlayingBar.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="UserControls\PlayerControlGrid.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\ControlPages\FailedDataMigrationContent.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\ControlPages\MoreInfoDialogContent.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\ControlPages\SelectFilesDialog.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\ControlPages\OnBoardingDialogContent.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\ContentDialogs\ProgressContentDialog.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Changelog.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Changelog.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
-    <!-- 
-      Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution 
-      Explorer "Package and Publish" context menu entry to be enabled for this project even if 
-      the Windows App SDK Nuget package has not yet been restored.
-    -->
-    <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-        <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
-    </PropertyGroup>
+	<ItemGroup>
+		<Compile Update="Changelog.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Changelog.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="UserControls\CustomTimerPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="UserControls\CoverImageTile.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Views\NewMiniPlayerPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="UserControls\PlaySkipButtonsStack.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="UserControls\TitleArtistStack.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="UserControls\NowPlayingBar.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="UserControls\PlayerControlGrid.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Views\ControlPages\FailedDataMigrationContent.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Views\ControlPages\MoreInfoDialogContent.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Views\ControlPages\SelectFilesDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Views\ControlPages\OnBoardingDialogContent.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Views\ContentDialogs\ProgressContentDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+	</PropertyGroup>
 </Project>

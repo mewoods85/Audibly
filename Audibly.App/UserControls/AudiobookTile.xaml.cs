@@ -1,5 +1,5 @@
 // Author: rstewa · https://github.com/rstewa
-// Updated: 06/09/2025
+// Updated: 12/05/2025
 
 using System;
 using System.Collections.Generic;
@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Audibly.App.Services;
 using Audibly.App.ViewModels;
 using Audibly.Models;
@@ -22,7 +24,7 @@ using ColorHelper = CommunityToolkit.WinUI.Helpers.ColorHelper;
 
 namespace Audibly.App.UserControls;
 
-public sealed partial class AudiobookTile : UserControl
+public sealed partial class AudiobookTile : UserControl, INotifyPropertyChanged
 {
     private readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
@@ -68,9 +70,6 @@ public sealed partial class AudiobookTile : UserControl
         await _dispatcherQueue.EnqueueAsync(async () =>
         {
             await PlayerViewModel.OpenAudiobook(audiobook);
-
-            // todo: this really breaks shit
-            // PlayerViewModel.MediaPlayer.Play();
         });
     }
 
@@ -209,7 +208,6 @@ public sealed partial class AudiobookTile : UserControl
         if (isCompleted) return;
 
         audiobookTile.ProgressGrid.Visibility = (double)e.NewValue < 1 ? Visibility.Collapsed : Visibility.Visible;
-        // audiobookTile.ProgressTextBlock.Text = $"{(double)e.NewValue:P0}";
     }
 
     public bool IsCompleted
@@ -262,5 +260,44 @@ public sealed partial class AudiobookTile : UserControl
         DependencyProperty.Register(nameof(FilePath), typeof(string), typeof(AudiobookTile),
             new PropertyMetadata(null));
 
+    // New dependency properties for series
+    public string Series
+    {
+        get => (string)GetValue(SeriesProperty);
+        set => SetValue(SeriesProperty, value);
+    }
+
+    public static readonly DependencyProperty SeriesProperty =
+        DependencyProperty.Register(nameof(Series), typeof(string), typeof(AudiobookTile),
+            new PropertyMetadata(null, OnSeriesOrNumberChanged));
+
+    public int? SeriesNumber
+    {
+        get => (int?)GetValue(SeriesNumberProperty);
+        set => SetValue(SeriesNumberProperty, value);
+    }
+
+    public static readonly DependencyProperty SeriesNumberProperty =
+        DependencyProperty.Register(nameof(SeriesNumber), typeof(int?), typeof(AudiobookTile),
+            new PropertyMetadata(null, OnSeriesOrNumberChanged));
+
+    private static void OnSeriesOrNumberChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is AudiobookTile t)
+            t.OnPropertyChanged(nameof(SeriesDisplay));
+    }
+
+    /// <summary>
+    /// Computed display string for series and number, used by the XAML TextBlock.
+    /// </summary>
+    public string SeriesDisplay =>
+        string.IsNullOrWhiteSpace(Series) ? string.Empty : SeriesNumber.HasValue ? $"{Series} #{SeriesNumber}" : Series;
+
     #endregion
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }

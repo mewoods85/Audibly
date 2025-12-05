@@ -1,6 +1,3 @@
-﻿// Author: rstewa · https://github.com/rstewa
-// Updated: 02/14/2025
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,7 +33,7 @@ public class AudiobookViewModel : BindableBase
     /// <summary>
     ///     Gets the chapters of the audiobook.
     /// </summary>
-    public ObservableCollection<ChapterInfo> Chapters { get; set; } = [];
+    public ObservableCollection<ChapterInfo> Chapters { get; set; } = new ObservableCollection<ChapterInfo>();
 
     /// <summary>
     ///     Gets or sets the volume glyph of the audiobook.

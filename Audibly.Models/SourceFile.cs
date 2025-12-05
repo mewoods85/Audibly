@@ -11,7 +11,7 @@ public class SourceFile : DbObject, IEquatable<SourceFile>
     public int CurrentTimeMs { get; set; }
     public long Duration { get; set; }
     public Guid AudiobookId { get; set; }
-    public Audiobook Audiobook { get; set; }
+    public Audiobook? Audiobook { get; set; }
 
     public bool Equals(SourceFile? other)
     {

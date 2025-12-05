@@ -68,7 +68,7 @@ public class ChapterInfo : DbObject, IEquatable<ChapterInfo>
     public string Subtitle { get; set; }
     
     public Guid AudiobookId { get; set; }
-    public Audiobook Audiobook { get; set; }
+    public Audiobook? Audiobook { get; set; }
 
     // ---------------- CONSTRUCTORS
 
