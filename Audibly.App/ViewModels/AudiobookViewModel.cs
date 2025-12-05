@@ -11,7 +11,7 @@ namespace Audibly.App.ViewModels;
 /// <summary>
 ///     Provides a bindable wrapper for the Customer model class, encapsulating various services for access by the UI.
 /// </summary>
-public class AudiobookViewModel : BindableBase
+public partial class AudiobookViewModel : BindableBase
 {
     private string _volumeGlyph;
 

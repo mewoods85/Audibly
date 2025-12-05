@@ -1,31 +1,44 @@
 ﻿	<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-		<RootNamespace>Audibly.App</RootNamespace>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
-		<Platforms>x86;x64;ARM64</Platforms>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-		<PublishProfile>win-$(Platform).pubxml</PublishProfile>
-		<UseRidGraph>true</UseRidGraph>
-		<UseWinUI>true</UseWinUI>
-		<EnableMsixTooling>true</EnableMsixTooling>
-		<Nullable>enable</Nullable>
-		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-		<AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
-		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-		<AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
-		<GenerateTestArtifacts>True</GenerateTestArtifacts>
-		<AppxBundle>Always</AppxBundle>
-		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-		<AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
-	</PropertyGroup>
+		<PropertyGroup>
+			<OutputType>WinExe</OutputType>
+			<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+			<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+			<RootNamespace>Audibly.App</RootNamespace>
+			<ApplicationManifest>app.manifest</ApplicationManifest>
 
-	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+			<!-- Architectures the project supports -->
+			<Platforms>x86;x64;ARM64</Platforms>
+
+			<!-- Default local build -->
+			<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+			<PlatformTarget>x64</PlatformTarget>
+
+			<!-- MSIX package RIDs -->
+			<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+
+			<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+			<PublishProfile>win-$(Platform).pubxml</PublishProfile>
+			<UseRidGraph>true</UseRidGraph>
+			<UseWinUI>true</UseWinUI>
+			<EnableMsixTooling>true</EnableMsixTooling>
+			<Nullable>enable</Nullable>
+			<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+			<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+			<AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
+			<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+			<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+			<AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
+			<GenerateTestArtifacts>True</GenerateTestArtifacts>
+
+			<!-- Must match Platforms -->
+			<AppxBundle>Always</AppxBundle>
+			<AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
+
+			<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+		</PropertyGroup>
+
+
+		<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<SentryOrg>audibly</SentryOrg>
 		<SentryProject>audibly</SentryProject>
 		<SentryCreateRelease>false</SentryCreateRelease>
@@ -93,7 +106,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
-		<PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.MarkdownTextBlock" Version="0.1.251021-build.2365" />
+		<PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.MarkdownTextBlock" Version="0.1.251030-build.2370" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
 		<PackageReference Include="CommunityToolkit.WinUI.Controls.TokenizingTextBox" Version="8.2.250402" />

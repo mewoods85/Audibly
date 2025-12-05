@@ -35,7 +35,7 @@ public sealed partial class TitleArtistStack : UserControl
     public TitleArtistStack()
     {
         InitializeComponent();
-        TitleMarqueeText.MarqueeCompleted += TitleMarqueeText_MarqueeCompleted;
+        //TitleMarqueeText.MarqueeCompleted += TitleMarqueeText_MarqueeCompleted;
         // CurrentChapterTitleMarqueeText.MarqueeCompleted += CurrentChapterTitleMarqueeText_MarqueeCompleted;
     }
 
@@ -76,9 +76,9 @@ public sealed partial class TitleArtistStack : UserControl
 
     private async void TitleMarqueeText_MarqueeCompleted(object? sender, EventArgs e)
     {
-        _dispatcherQueue.TryEnqueue(() => TitleMarqueeText.StopMarquee());
+        //_dispatcherQueue.TryEnqueue(() => TitleMarqueeText.StopMarquee());
         await Task.Delay(TimeSpan.FromSeconds(5)); // wait for 3 seconds
-        _dispatcherQueue.TryEnqueue(() => TitleMarqueeText.StartMarquee());
+        //_dispatcherQueue.TryEnqueue(() => TitleMarqueeText.StartMarquee());
     }
 
     // private void CurrentChapterTitleMarqueeText_MarqueeCompleted(object? sender, EventArgs e)

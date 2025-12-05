@@ -56,9 +56,16 @@ public partial class App : Application
     /// </summary>
     public App()
     {
+#if !DEBUG
+    var dsn = Helpers.Sentry.Dsn;
+
+    // Only initialize Sentry if we actually have a valid DSN
+    if (!string.IsNullOrWhiteSpace(dsn) &&
+        Uri.IsWellFormedUriString(dsn, UriKind.Absolute))
+    {
         SentrySdk.Init(options =>
         {
-            options.Dsn = Helpers.Sentry.Dsn;
+            options.Dsn = dsn;
             options.AutoSessionTracking = true;
             options.SampleRate = 0.25f;
             options.TracesSampleRate = 0.25;
@@ -66,10 +73,13 @@ public partial class App : Application
             options.ProfilesSampleRate = 0.25;
             options.Environment = "production";
         });
+    }
+#endif
 
         UnhandledException += OnUnhandledException;
         InitializeComponent();
     }
+
 
     /// <summary>
     ///     Gets main App Window

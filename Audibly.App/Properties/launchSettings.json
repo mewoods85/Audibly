@@ -1,5 +1,12 @@
 {
   "profiles": {
+    "Audibly.App": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
     "Audibly.App (Package)": {
       "commandName": "MsixPackage",
       "commandLineArgs": "",
