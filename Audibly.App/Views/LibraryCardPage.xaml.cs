@@ -167,6 +167,16 @@ public sealed partial class LibraryCardPage : Page
         return matches;
     }
 
+    ///<summary>
+    ///     Clicking the Series button currently does nothing.
+    ///</summary>
+
+    private void SeriesButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        // placeholder for future series UI
+    }
+
+
     /// <summary>
     ///     Filters the audiobook list based on the search text.
     /// </summary>
