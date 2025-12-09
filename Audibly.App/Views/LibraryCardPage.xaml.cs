@@ -76,6 +76,15 @@ public sealed partial class LibraryCardPage : Page
         SelectAllFiltersCheckBox.IsChecked = false;
     }
 
+    private void LibraryListView_ItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is AudiobookViewModel audiobookVm)
+        {
+            _ = PlayerViewModel.OpenAudiobook(audiobookVm);
+        }
+    }
+
+
     private async void LibraryCardPage_Loaded(object sender, RoutedEventArgs e)
     {
         // check if data migration already failed

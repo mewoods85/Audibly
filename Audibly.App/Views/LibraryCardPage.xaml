@@ -137,7 +137,7 @@
                                         Content="In Progress"
                                         Margin="24,0,0,0"
                                         Unchecked="InProgressFilterCheckBox_OnUnchecked"
-                                        x:Name="InProgressFilterCheckbox" />
+                                        x:Name="InProgressFilterCheckBox" />
                                     <CheckBox
                                         Checked="NotStartedFilterCheckBox_OnChecked"
                                         Content="Not Started"
@@ -330,25 +330,104 @@
         </StackPanel>
 
         <!--  library card view  -->
+        <!--  library table view  -->
         <ScrollViewer
-            IsVerticalScrollChainingEnabled="False"
-            Padding="0,8,0,8"
-            RelativePanel.AlignBottomWithPanel="True"
-            RelativePanel.AlignLeftWithPanel="True"
-            RelativePanel.AlignRightWithPanel="True"
-            RelativePanel.Below="TitleAndCommandBarPanel"
-            x:Name="LibraryCardScrollView">
-            <StackPanel Orientation="Vertical">
-                <!-- something like this, names will differ -->
-                <ItemsRepeater ItemsSource="{x:Bind ViewModel.Audiobooks, Mode=OneWay}">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="models:Audiobook">
-                            <userControls:CoverImageTile />
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
-                <Rectangle Height="200" Opacity="0" />
-            </StackPanel>
+    IsVerticalScrollChainingEnabled="False"
+    Padding="0,8,0,8"
+    RelativePanel.AlignBottomWithPanel="True"
+    RelativePanel.AlignLeftWithPanel="True"
+    RelativePanel.AlignRightWithPanel="True"
+    RelativePanel.Below="TitleAndCommandBarPanel"
+    x:Name="LibraryCardScrollView">
+
+            <!-- ListView instead of ItemsRepeater -->
+            <ListView
+        x:Name="LibraryListView"
+        ItemsSource="{x:Bind ViewModel.Audiobooks, Mode=OneWay}"
+        IsItemClickEnabled="True"
+        SelectionMode="Single"
+        ItemClick="LibraryListView_ItemClick"
+        Margin="0,0,0,24">
+
+                <!-- Header row -->
+                <ListView.Header>
+                    <Grid Padding="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <!-- Cover -->
+                            <ColumnDefinition Width="2*" />
+                            <!-- Title -->
+                            <ColumnDefinition Width="2*" />
+                            <!-- Author -->
+                            <ColumnDefinition Width="2*" />
+                            <!-- Series -->
+                            <ColumnDefinition Width="Auto" />
+                            <!-- # -->
+                            <ColumnDefinition Width="Auto" />
+                            <!-- Progress -->
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Cover"   FontWeight="SemiBold" />
+                        <TextBlock Grid.Column="1" Text="Title"   FontWeight="SemiBold" />
+                        <TextBlock Grid.Column="2" Text="Author"  FontWeight="SemiBold" />
+                        <TextBlock Grid.Column="3" Text="Series"  FontWeight="SemiBold" />
+                        <TextBlock Grid.Column="4" Text="#"       FontWeight="SemiBold" />
+                        <TextBlock Grid.Column="5" Text="Progress" FontWeight="SemiBold" />
+                    </Grid>
+                </ListView.Header>
+
+                <!-- Row template: bind to AudiobookViewModel -->
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:AudiobookViewModel">
+                        <Grid Padding="0,4"
+                      VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Small cover thumbnail -->
+                            <Image Grid.Column="0"
+                           Width="48"
+                           Height="48"
+                           Stretch="UniformToFill">
+                                <Image.Source>
+                                    <Binding Path="ThumbnailPath"
+                                     Converter="{StaticResource StringToImageSourceConverter}" />
+                                </Image.Source>
+                            </Image>
+
+                            <TextBlock Grid.Column="1"
+                               Text="{x:Bind Title, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+
+                            <TextBlock Grid.Column="2"
+                               Text="{x:Bind Author, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+
+                            <!-- assumes Series is on AudiobookViewModel -->
+                            <TextBlock Grid.Column="3"
+                               Text="{x:Bind Series, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+
+                            <!-- assumes SeriesNumber is on AudiobookViewModel -->
+                            <TextBlock Grid.Column="4"
+                               Margin="12,0,12,0"
+                               Text="{x:Bind SeriesNumber, Mode=OneWay}" />
+
+                            <!-- simple progress text; tweak to match your VM -->
+                            <TextBlock Grid.Column="5"
+                               Margin="12,0,0,0"
+                               Text="{x:Bind Progress, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </ScrollViewer>
 
         <!--  progress bar for when library view is loading  -->
