@@ -29,3 +29,4 @@
   - [ ] Import audiobooks from an Audibly export file
     - [ ] audibly_export.audibly (.json)
 - [ ] Export
+- [ ] Series

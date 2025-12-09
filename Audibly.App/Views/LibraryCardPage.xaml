@@ -13,7 +13,7 @@
     xmlns:viewModels="using:Audibly.App.ViewModels"
     xmlns:views="using:Audibly.App.Views"
     xmlns:winUi="using:CommunityToolkit.WinUI"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:models="using:Audibly.Models">
 
     <Page.Resources>
         <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
@@ -137,7 +137,7 @@
                                         Content="In Progress"
                                         Margin="24,0,0,0"
                                         Unchecked="InProgressFilterCheckBox_OnUnchecked"
-                                        x:Name="InProgressFilterCheckBox" />
+                                        x:Name="InProgressFilterCheckbox" />
                                     <CheckBox
                                         Checked="NotStartedFilterCheckBox_OnChecked"
                                         Content="Not Started"
@@ -339,17 +339,13 @@
             RelativePanel.Below="TitleAndCommandBarPanel"
             x:Name="LibraryCardScrollView">
             <StackPanel Orientation="Vertical">
-                <ItemsRepeater
-                    ItemTemplate="{StaticResource AudiobookTemplate}"
-                    ItemsSource="{x:Bind ViewModel.Audiobooks, Mode=OneWay}"
-                    x:Name="LibraryCardView">
-                    <ItemsRepeater.Layout>
-                        <UniformGridLayout
-                            ItemsJustification="Start"
-                            ItemsStretch="Uniform"
-                            MinColumnSpacing="4"
-                            MinRowSpacing="12" />
-                    </ItemsRepeater.Layout>
+                <!-- something like this, names will differ -->
+                <ItemsRepeater ItemsSource="{x:Bind ViewModel.Audiobooks, Mode=OneWay}">
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="models:Audiobook">
+                            <userControls:CoverImageTile />
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
                 </ItemsRepeater>
                 <Rectangle Height="200" Opacity="0" />
             </StackPanel>
