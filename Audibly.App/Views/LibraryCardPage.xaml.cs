@@ -20,8 +20,27 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Sentry;
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+using System.Collections.ObjectModel;
+using System.Linq;
+
 
 namespace Audibly.App.Views;
+
+///<summary>
+///     Add new Series View to display series of audiobooks.
+/// </summary>
+
+public class SeriesGroup
+{
+    public string Series { get; set; } = "";
+    public int BookCount { get; set; }
+    public string? FirstTitle { get; set; }
+    public string? LastTitle { get; set; }
+    public IReadOnlyList<AudiobookViewModel> Books { get; set; } = Array.Empty<AudiobookViewModel>();
+    private readonly ObservableCollection<SeriesGroup> _seriesGroups = new();
+    private bool _isSeriesView = false;
+}
+
 
 /// <summary>
 ///     An empty page that can be used on its own or navigated to within a Frame.
@@ -174,6 +193,33 @@ public sealed partial class LibraryCardPage : Page
     private void SeriesButton_OnClick(object sender, RoutedEventArgs e)
     {
         // placeholder for future series UI
+    }
+
+    ///<summary>
+    ///     Update Table metadata and save to Audibly.db.
+    /// </summary>
+
+    private async void MetadataTextBox_LostFocus(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (sender is not FrameworkElement fe)
+                return;
+
+            if (fe.DataContext is not AudiobookViewModel vm)
+                return;
+
+            await App.Repository.Audiobooks.UpsertAsync(vm.Model);
+        }
+        catch (Exception ex)
+        {
+            ViewModel.LoggingService.LogError(ex, true);
+            ViewModel.EnqueueNotification(new Notification
+            {
+                Message = "Failed to save changes for this audiobook.",
+                Severity = InfoBarSeverity.Error
+            });
+        }
     }
 
 
