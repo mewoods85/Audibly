@@ -378,28 +378,55 @@
                     <ListView.Header>
                         <Grid Margin="16,0,0,8" Padding="0,0,0,4">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="60" />
                                 <!-- Cover -->
-                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="60" />
                                 <!-- Title -->
                                 <ColumnDefinition Width="2*" />
                                 <!-- Author -->
                                 <ColumnDefinition Width="2*" />
                                 <!-- Series -->
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="2*" />
                                 <!-- Series # -->
                                 <ColumnDefinition Width="Auto" />
                                 <!-- Progress -->
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="Cover"    FontWeight="SemiBold" />
-                            <TextBlock Grid.Column="1" Text="Title"    FontWeight="SemiBold" />
-                            <TextBlock Grid.Column="2" Text="Author"   FontWeight="SemiBold" />
-                            <TextBlock Grid.Column="3" Text="Series"   FontWeight="SemiBold" />
-                            <TextBlock Grid.Column="4" Text="Series #" FontWeight="SemiBold" />
-                            <TextBlock Grid.Column="5" Text="Progress" FontWeight="SemiBold" />
+                            <!-- Cover header -->
+                            <TextBlock Grid.Column="0"
+                               Text="Cover"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center" />
+
+                            <!-- Title header -->
+                            <TextBlock Grid.Column="1"
+                               Text="Title"
+                               FontWeight="SemiBold" />
+
+                            <!-- Author header -->
+                            <TextBlock Grid.Column="2"
+                               Text="Author"
+                               FontWeight="SemiBold" />
+
+                            <!-- Series header -->
+                            <TextBlock Grid.Column="3"
+                               Text="Series"
+                               FontWeight="SemiBold" />
+
+                            <!-- Series # header -->
+                            <TextBlock Grid.Column="4"
+                               Text="Series #"
+                               FontWeight="SemiBold"
+                               Margin="0,0,12,0" />
+
+                            <!-- Progress header -->
+                            <TextBlock Grid.Column="5"
+                               Text="Progress"
+                               FontWeight="SemiBold"
+                               Margin="12,0,0,0" />
                         </Grid>
                     </ListView.Header>
+
 
                     <!-- Row template (your existing one, adjusted slightly) -->
                     <ListView.ItemTemplate>
@@ -408,11 +435,17 @@
                                   Padding="0,4"
                                   VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
+                                    <!-- Cover -->
                                     <ColumnDefinition Width="60" />
+                                    <!-- Title -->
                                     <ColumnDefinition Width="2*" />
+                                    <!-- Author -->
                                     <ColumnDefinition Width="2*" />
+                                    <!-- Series -->
                                     <ColumnDefinition Width="2*" />
+                                    <!-- Series # -->
                                     <ColumnDefinition Width="Auto" />
+                                    <!-- Progress -->
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
