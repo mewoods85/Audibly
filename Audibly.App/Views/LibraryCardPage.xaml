@@ -137,7 +137,7 @@
                                         Content="In Progress"
                                         Margin="24,0,0,0"
                                         Unchecked="InProgressFilterCheckBox_OnUnchecked"
-                                        x:Name="InProgressFilterCheckbox" />
+                                        x:Name="InProgressFilterCheckBox" />
                                     <CheckBox
                                         Checked="NotStartedFilterCheckBox_OnChecked"
                                         Content="Not Started"
@@ -160,12 +160,14 @@
                         Label="Refresh"
                         ToolTipService.ToolTip="Refresh audiobooks" />
                     <AppBarSeparator />
-                    <!--#region New Series Button -->
-                    <!--   <AppBarButton-->
-                    <!--Click="{}"-->
-                    <!--Icon="Series"-->
-                    <!--Label="Series"-->
-                    <!--ToolTipService.ToolTip="Show Series List"/>-->
+                    <!-- View toggle: cards <-> table -->
+                    <AppBarButton
+                        x:Name="ViewToggleButton"
+                        Click="ViewToggleButton_OnClick"
+                        Icon="Preview"
+                        Label="Cards"
+                        ToolTipService.ToolTip="Toggle between card view and table view" />
+
                     <!--#endregion-->
                     <AppBarSeparator />
                     <AppBarButton
@@ -329,7 +331,8 @@
             </StackPanel>
         </StackPanel>
 
-        <!--  library card view  -->
+        <!--  library view  -->
+        <!--  library card view + table view container  -->
         <ScrollViewer
             IsVerticalScrollChainingEnabled="False"
             Padding="0,8,0,8"
@@ -338,18 +341,172 @@
             RelativePanel.AlignRightWithPanel="True"
             RelativePanel.Below="TitleAndCommandBarPanel"
             x:Name="LibraryCardScrollView">
-            <StackPanel Orientation="Vertical">
-                <!-- something like this, names will differ -->
-                <ItemsRepeater ItemsSource="{x:Bind ViewModel.Audiobooks, Mode=OneWay}">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="models:Audiobook">
-                            <userControls:CoverImageTile />
+
+            <Grid>
+
+                <!-- CARD VIEW: original title-card icons -->
+                <StackPanel
+                    x:Name="CardViewPanel"
+                    Orientation="Vertical">
+
+                    <ItemsRepeater
+                        ItemsSource="{x:Bind ViewModel.Audiobooks, Mode=OneWay}"
+                        ItemTemplate="{StaticResource AudiobookTemplate}" />
+
+                    <!-- extra padding at bottom so last row isn't flush to the edge -->
+                    <Rectangle Height="200" Opacity="0" />
+                </StackPanel>
+
+                <!-- TABLE VIEW: metadata table -->
+                <ListView
+                    x:Name="LibraryListView"
+                    ItemsSource="{x:Bind ViewModel.Audiobooks, Mode=OneWay}"
+                    IsItemClickEnabled="True"
+                    SelectionMode="Single"
+                    ItemClick="LibraryListView_ItemClick"
+                    Margin="0,0,0,24"
+                    Visibility="Collapsed">
+
+                    <!-- Make rows stretch so the Grid fills the width -->
+                    <ListView.Resources>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.Resources>
+
+                    <!-- Header row -->
+                    <ListView.Header>
+                        <Grid Margin="16,0,0,8" Padding="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <!-- Cover -->
+                                <ColumnDefinition Width="60" />
+                                <!-- Title -->
+                                <ColumnDefinition Width="2*" />
+                                <!-- Author -->
+                                <ColumnDefinition Width="2*" />
+                                <!-- Series -->
+                                <ColumnDefinition Width="2*" />
+                                <!-- Series # -->
+                                <ColumnDefinition Width="Auto" />
+                                <!-- Progress -->
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Cover header -->
+                            <TextBlock Grid.Column="0"
+                               Text="Cover"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center" />
+
+                            <!-- Title header -->
+                            <TextBlock Grid.Column="1"
+                               Text="Title"
+                               FontWeight="SemiBold" />
+
+                            <!-- Author header -->
+                            <TextBlock Grid.Column="2"
+                               Text="Author"
+                               FontWeight="SemiBold" />
+
+                            <!-- Series header -->
+                            <TextBlock Grid.Column="3"
+                               Text="Series"
+                               FontWeight="SemiBold" />
+
+                            <!-- Series # header -->
+                            <TextBlock Grid.Column="4"
+                               Text="Series #"
+                               FontWeight="SemiBold"
+                               Margin="0,0,12,0" />
+
+                            <!-- Progress header -->
+                            <TextBlock Grid.Column="5"
+                               Text="Progress"
+                               FontWeight="SemiBold"
+                               Margin="12,0,0,0" />
+                        </Grid>
+                    </ListView.Header>
+
+
+                    <!-- Row template (your existing one, adjusted slightly) -->
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:AudiobookViewModel">
+                            <Grid Margin="16,0,0,0"
+                                  Padding="0,4"
+                                  VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <!-- Cover -->
+                                    <ColumnDefinition Width="60" />
+                                    <!-- Title -->
+                                    <ColumnDefinition Width="2*" />
+                                    <!-- Author -->
+                                    <ColumnDefinition Width="2*" />
+                                    <!-- Series -->
+                                    <ColumnDefinition Width="2*" />
+                                    <!-- Series # -->
+                                    <ColumnDefinition Width="Auto" />
+                                    <!-- Progress -->
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Cover thumbnail -->
+                                <Image Grid.Column="0"
+                                       Width="48"
+                                       Height="48"
+                                       Stretch="UniformToFill">
+                                    <Image.Source>
+                                        <Binding Path="ThumbnailPath"
+                                                 Converter="{StaticResource StringToImageSourceConverter}" />
+                                    </Image.Source>
+                                </Image>
+
+                                <!-- Title (editable) -->
+                                <TextBox Grid.Column="1"
+                                         Text="{x:Bind Title, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                         LostFocus="MetadataTextBox_LostFocus"
+                                         BorderThickness="0"
+                                         Background="Transparent"
+                                         Padding="0" />
+
+                                <!-- Author (editable) -->
+                                <TextBox Grid.Column="2"
+                                         Text="{x:Bind Author, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                         LostFocus="MetadataTextBox_LostFocus"
+                                         BorderThickness="0"
+                                         Background="Transparent"
+                                         Padding="0" />
+
+                                <!-- Series (editable) -->
+                                <TextBox Grid.Column="3"
+                                         Text="{x:Bind Series, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                         LostFocus="MetadataTextBox_LostFocus"
+                                         BorderThickness="0"
+                                         Background="Transparent"
+                                         Padding="0" />
+
+                                <!-- Series # (editable) -->
+                                <TextBox Grid.Column="4"
+                                         Margin="12,0,12,0"
+                                         Text="{x:Bind SeriesNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                         LostFocus="MetadataTextBox_LostFocus"
+                                         BorderThickness="0"
+                                         Background="Transparent"
+                                         Padding="0"
+                                         TextAlignment="Center" />
+
+                                <!-- Progress (read-only) -->
+                                <TextBlock Grid.Column="5"
+                                           Margin="12,0,0,0"
+                                           Text="{x:Bind Progress, Mode=OneWay}"
+                                           TextTrimming="CharacterEllipsis" />
+                            </Grid>
                         </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
-                <Rectangle Height="200" Opacity="0" />
-            </StackPanel>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </Grid>
         </ScrollViewer>
+
 
         <!--  progress bar for when library view is loading  -->
         <userControls:ProgressBarCard
