@@ -268,7 +268,19 @@ public partial class AudiobookViewModel : BindableBase
     /// <summary>
     ///     Gets or sets the author of the audiobook.
     /// </summary>
-    public string Author => Model.Author;
+    public string Author
+    {
+        get => Model.Author;
+        set
+        {
+            if (Model.Author != value)
+            {
+                Model.Author = value;
+                IsModified = true;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     /// <summary>
     ///     Gets or sets the composer of the audiobook
@@ -304,7 +316,19 @@ public partial class AudiobookViewModel : BindableBase
     /// <summary>
     ///     Gets the title of the audiobook.
     /// </summary>
-    public string Title => Model.Title;
+    public string Title
+    {
+        get => Model.Title;
+        set
+        {
+            if (Model.Title != value)
+            {
+                Model.Title = value;
+                IsModified = true;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     /// <summary>
     ///     Gets or sets the release date of the audiobook.
@@ -337,7 +361,49 @@ public partial class AudiobookViewModel : BindableBase
     /// </summary>
     public List<SourceFile> SourcePaths => Model.SourcePaths;
 
-    #endregion
+    /// <summary>
+    /// Gets or sets the series name.
+    /// </summary>
+    public string Series
+    {
+        get => Model.Series;
+        set
+        {
+            if (value == Model.Series) return;
+            Model.Series = value;
+            IsModified = true;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(SeriesDisplay));
+        }
+    }
 
+    /// <summary>
+    /// Gets or sets the series number (nullable).
+    /// </summary>
+    public int? SeriesNumber
+    {
+        get => Model.SeriesNumber;
+        set
+        {
+            if (value == Model.SeriesNumber) return;
+            Model.SeriesNumber = value;
+            IsModified = true;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(SeriesDisplay));
+        }
+    }
+
+    /// <summary>
+    /// Returns a compact string for display, e.g. "My Series #2" or empty if no series.
+    /// </summary>
+    public string SeriesDisplay
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Model.Series)) return string.Empty;
+            return Model.SeriesNumber.HasValue ? $"{Model.Series} #{Model.SeriesNumber}" : Model.Series;
+        }
+    }
     #endregion
 }
+#endregion

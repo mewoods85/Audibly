@@ -26,20 +26,18 @@ using System.Linq;
 
 namespace Audibly.App.Views;
 
-///<summary>
-///     Add new Series View to display series of audiobooks.
-/// </summary>
+/////<summary>
+/////     Add new Series View to display series of audiobooks.
+///// </summary>
 
-public class SeriesGroup
-{
-    public string Series { get; set; } = "";
-    public int BookCount { get; set; }
-    public string? FirstTitle { get; set; }
-    public string? LastTitle { get; set; }
-    public IReadOnlyList<AudiobookViewModel> Books { get; set; } = Array.Empty<AudiobookViewModel>();
-    private readonly ObservableCollection<SeriesGroup> _seriesGroups = new();
-    private bool _isSeriesView = false;
-}
+//public class SeriesGroup
+//{
+//    public string Series { get; set; } = "";
+//    public int BookCount { get; set; }
+//    public string? FirstTitle { get; set; }
+//    public string? LastTitle { get; set; }
+//    public IReadOnlyList<AudiobookViewModel> Books { get; set; } = Array.Empty<AudiobookViewModel>();
+//}
 
 
 /// <summary>
@@ -71,14 +69,22 @@ public sealed partial class LibraryCardPage : Page
     private readonly HashSet<AudioBookFilter> _activeFilters = new();
     private readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
+    ////backing collections for series view
+    //private readonly ObservableCollection<SeriesGroup> _seriesGroups = new();
+    //private bool _isSeriesView = false;
+    //private readonly DataTemplate _audiobookRowTemplate;
+
     public LibraryCardPage()
     {
         InitializeComponent();
+        //_audiobookRowTemplate = LibraryListView.ItemTemplate;
 
         // subscribe to page loaded event
         Loaded += LibraryCardPage_Loaded;
         ViewModel.ResetFilters += ViewModelOnResetFilters;
     }
+
+    private bool _isTableView = false;
 
     /// <summary>
     ///     Gets the app-wide ViewModel instance.
@@ -100,6 +106,38 @@ public sealed partial class LibraryCardPage : Page
         if (e.ClickedItem is AudiobookViewModel audiobookVm)
         {
             _ = PlayerViewModel.OpenAudiobook(audiobookVm);
+        }
+    }
+
+    private void ViewToggleButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        _isTableView = !_isTableView;
+
+        if (_isTableView)
+        {
+            // Show table, hide cards
+            CardViewPanel.Visibility = Visibility.Collapsed;
+            LibraryListView.Visibility = Visibility.Visible;
+
+            if (ViewToggleButton.Icon is SymbolIcon symbolIcon)
+            {
+                symbolIcon.Symbol = Symbol.List;
+            }
+
+            ViewToggleButton.Label = "Table";
+        }
+        else
+        {
+            // Show cards, hide table
+            LibraryListView.Visibility = Visibility.Collapsed;
+            CardViewPanel.Visibility = Visibility.Visible;
+
+            if (ViewToggleButton.Icon is SymbolIcon symbolIcon)
+            {
+                symbolIcon.Symbol = Symbol.Preview;
+            }
+
+            ViewToggleButton.Label = "Cards";
         }
     }
 
@@ -186,14 +224,57 @@ public sealed partial class LibraryCardPage : Page
         return matches;
     }
 
-    ///<summary>
-    ///     Clicking the Series button currently does nothing.
-    ///</summary>
+    /////<summary>
+    /////     Clicking the Series button currently does nothing.
+    /////</summary>
 
-    private void SeriesButton_OnClick(object sender, RoutedEventArgs e)
-    {
-        // placeholder for future series UI
-    }
+    //private void SeriesButton_OnClick(object sender, RoutedEventArgs e)
+    //{
+    //    // placeholder for future series UI
+    //    if (!_isSeriesView)
+    //    {
+    //        // switch to SERIES view
+    //        BuildSeriesGroups();
+
+    //        LibraryListView.ItemsSource = _seriesGroups;
+    //        LibraryListView.ItemTemplate = (DataTemplate)Resources["SeriesRowTemplate"];
+    //        LibraryListView.IsItemClickEnabled = false;
+
+    //        _isSeriesView = true;
+    //    }
+    //    else
+    //    {
+    //        // switch to normal AUDIOBOOK view
+    //        LibraryListView.ItemsSource = ViewModel.Audiobooks;
+    //        LibraryListView.ItemTemplate = _audiobookRowTemplate;
+    //        LibraryListView.IsItemClickEnabled = true;
+    //        _isSeriesView = false;
+    //    }
+
+    //}
+
+    //private void BuildSeriesGroups()
+    //{
+    //    _seriesGroups.Clear();
+
+    //    var groups = ViewModel.Audiobooks
+    //        .Where(a => !string.IsNullOrWhiteSpace(a.Series))
+    //        .GroupBy(a => a.Series)
+    //        .OrderBy(g => g.Key);
+        
+    //    foreach(var g in groups)
+    //    {
+    //        var ordered = g.OrderBy(b => b.SeriesNumber ?? int.MaxValue).ToList();
+    //        _seriesGroups.Add(new SeriesGroup
+    //            {
+    //            Series = g.Key,
+    //            BookCount = ordered.Count(),
+    //            FirstTitle = ordered.FirsOrDefault()?.Title,
+    //            LastTitle = ordered.LastOrDefault()?.Title,
+    //            Books = ordered
+    //        });
+    //    }
+    //}
 
     ///<summary>
     ///     Update Table metadata and save to Audibly.db.
